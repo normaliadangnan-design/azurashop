@@ -41,18 +41,20 @@ const CONFIG = {
 
 client.on('ready', () => {
   console.log(`✅ Bot ay nakakonekta bilang: ${client.user.tag}`);
+  console.log('✅ Lahat ng commands ay aktibo na!');
 });
 
 // ==============================================
 // 🛡️ INTERACTION HANDLER
 // ==============================================
 client.on('interactionCreate', async interaction => {
+  // --- SLASH COMMANDS ---
   if (interaction.isChatInputCommand()) {
 
-    // /embed command
+    // /embed command - MAY LARAWAN/GIF NA
     if (interaction.commandName === 'embed') {
       if (interaction.user.id !== CONFIG.OWNER_ID) {
-        return interaction.reply({ content: '❌ Wala kang pahintulot.', ephemeral: true });
+        return interaction.reply({ content: '❌ Wala kang pahintulot gamitin ang command na ito.', ephemeral: true });
       }
       const title = interaction.options.getString('title');
       const description = interaction.options.getString('description');
@@ -68,13 +70,13 @@ client.on('interactionCreate', async interaction => {
       if (imageUrl) embed.setImage(imageUrl);
 
       await interaction.channel.send({ embeds: [embed] });
-      await interaction.reply({ content: '✅ Nai-send na!', ephemeral: true });
+      await interaction.reply({ content: '✅ Embed naipadala na!', ephemeral: true });
     }
 
-    // /setupticket command - ✅ TAMA NA ANG ITSURA DITO!
+    // /setupticket command - ✅ TAMA NA ANG ITSURA!
     if (interaction.commandName === 'setupticket') {
       if (interaction.user.id !== CONFIG.OWNER_ID) {
-        return interaction.reply({ content: '❌ Wala kang pahintulot.', ephemeral: true });
+        return interaction.reply({ content: '❌ Wala kang pahintulot gamitin ang command na ito.', ephemeral: true });
       }
 
       const ticketEmbed = new EmbedBuilder()
@@ -95,7 +97,7 @@ client.on('interactionCreate', async interaction => {
         .setColor('#1a1a2e')
         .setTimestamp();
 
-      // ✅ ITO NA ANG GUSTO MONG ITSURA: SHOP at SUPPORT, GRAY, WALANG IBA
+      // ✅ ITO NA ANG GUSTO MO: SHOP at SUPPORT, GRAY, WALANG IBA
       const buttons = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setCustomId('open_buy')
@@ -118,11 +120,11 @@ client.on('interactionCreate', async interaction => {
 
     const existingTicket = guild.channels.cache.find(ch => ch.name.toLowerCase() === `ticket-${user.username.toLowerCase()}`);
     if (existingTicket && customId !== 'close_ticket') {
-      return interaction.reply({ content: `❌ Mayroon ka nang ticket: ${existingTicket}`, ephemeral: true });
+      return interaction.reply({ content: `❌ Mayroon ka nang aktibong ticket: ${existingTicket}`, ephemeral: true });
     }
 
     if (customId === 'open_buy' || customId === 'open_support') {
-      const ticketType = customId === 'open_buy' ? '➤ ORDER / PURCHASE' : '➤ SUPPORT / HELP';
+      const ticketType = customId === 'open_buy' ? '🛒 ORDER / PURCHASE' : '🔧 SUPPORT / HELP';
       try {
         const ticketChannel = await guild.channels.create({
           name: `ticket-${user.username}`,
@@ -131,15 +133,16 @@ client.on('interactionCreate', async interaction => {
           permissionOverwrites: [
             { id: guild.id, deny: [PermissionFlagsBits.ViewChannel] },
             { id: user.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.AttachFiles, PermissionFlagsBits.ReadMessageHistory] },
-            { id: CONFIG.OWNER_ID, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageChannels] }
+            { id: CONFIG.OWNER_ID, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageMessages] }
           ]
         });
 
         const ticketContent = new EmbedBuilder()
           .setTitle(`${ticketType} TICKET`)
           .setDescription(`Hello ${user}!
+*📌 PAALALA:*
 • Magbigay ng detalyadong impormasyon
-• I-type ang \`.payment\` para makita ang detalye
+• Para sa pagbili: I-type ang \`.payment\` para makita ang detalye
 • Mag-upload ng proof of payment kapag nagbayad na
 • Huwag mag-spam, sumagot kami sa loob ng 2 oras
 
@@ -156,12 +159,12 @@ Salamat sa pagpili sa AZURA SHOP!`)
         await interaction.reply({ content: `✅ Ticket na ginawa: ${ticketChannel}`, ephemeral: true });
 
       } catch (error) {
-        await interaction.reply({ content: '❌ Hindi nagawa ang ticket.', ephemeral: true });
+        await interaction.reply({ content: '❌ Hindi nagawa ang ticket. Pakisuyong subukan ulit.', ephemeral: true });
       }
     }
 
     if (customId === 'close_ticket') {
-      await interaction.reply({ content: '⏳ Isasara ang ticket...' });
+      await interaction.reply({ content: '⏳ Isasara at buburahin ang ticket sa loob ng 5 segundo...' });
       setTimeout(() => interaction.channel.delete().catch(console.error), 5000);
     }
   }
@@ -184,7 +187,7 @@ client.on('messageCreate', async message => {
       .setColor('#00a8ff')
       .setTimestamp();
 
-    // ✅ DITO LALABAS ANG QR CODE MO
+    // ✅ DITO LALABAS ANG MALAKING QR CODE MO
     if (CONFIG.GCASH.QR_CODE) paymentEmbed.setImage(CONFIG.GCASH.QR_CODE);
 
     await message.channel.send({ embeds: [paymentEmbed] });
@@ -192,27 +195,35 @@ client.on('messageCreate', async message => {
 });
 
 // ==============================================
-// 📝 REGISTER COMMANDS
+// 📝 REGISTER COMMANDS - PINAGANDA KO PARA SIGURADO
 // ==============================================
 const commands = [
-  new SlashCommandBuilder().setName('embed').setDescription('Gumawa ng embed (Owner)')
-    .addStringOption(opt => opt.setName('title').setDescription('Pamagat').setRequired(true))
-    .addStringOption(opt => opt.setName('description').setDescription('Nilalaman').setRequired(true))
-    .addStringOption(opt => opt.setName('color').setDescription('Kulay').setRequired(false))
-    .addStringOption(opt => opt.setName('image').setDescription('Larawan').setRequired(false)),
-  new SlashCommandBuilder().setName('setupticket').setDescription('Mag-setup ng ticket (Owner)')
+  new SlashCommandBuilder()
+    .setName('embed')
+    .setDescription('Gumawa ng custom embed post (Owner only)')
+    .addStringOption(opt => opt.setName('title').setDescription('Pamagat ng embed').setRequired(true))
+    .addStringOption(opt => opt.setName('description').setDescription('Nilalaman o mensahe').setRequired(true))
+    .addStringOption(opt => opt.setName('color').setDescription('Kulay ng border (hal: #ff0000)').setRequired(false))
+    .addStringOption(opt => opt.setName('image').setDescription('Link ng larawan o GIF').setRequired(false)),
+  new SlashCommandBuilder()
+    .setName('setupticket')
+    .setDescription('Mag-setup ng ticket panel sa channel na ito (Owner only)')
 ];
 
 const rest = new REST({ version: '10' }).setToken(CONFIG.BOT_TOKEN);
 
 (async () => {
   try {
-    // Linisin at i-update ang commands
+    console.log('🔄 Ina-update ang mga commands...');
+    // Burahin muna ang luma para sigurado
+    await rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), { body: [] });
+    // Ilagay ang bago at tama
     await rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), { body: commands });
-    console.log('✅ Commands updated!');
+    console.log('✅ Lahat ng commands ay matagumpay na nairehistro!');
   } catch (error) {
     console.error('❌ Error:', error);
   }
 })();
 
+// Mag-login
 client.login(CONFIG.BOT_TOKEN);
