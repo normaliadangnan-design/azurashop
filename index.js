@@ -34,6 +34,7 @@ const CONFIG = {
   GCASH: {
     NUMBER: '09536398656',
     NAME: 'SA******N A.',
+    QR_CODE: 'https://cdn.discordapp.com/attachments/1397829995908567092/1512225732519268453/IMG_4524.png?ex=6a235176&is=6a21fff6&hm=166c7512f46bebe2cbd88f7d340d1d48712b51fbbfff78450512052d53050d0e'
   }
 };
 // ==============================================
