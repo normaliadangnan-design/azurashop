@@ -53,7 +53,7 @@ client.on('interactionCreate', async interaction => {
   // --- SLASH COMMANDS ---
   if (interaction.isChatInputCommand()) {
 
-    // /embed command - ✅ INAYOS NA PWEDE NA MAY LARAWAN/GIF
+    // /embed command - ✅ MAY LARAWAN/GIF NA
     if (interaction.commandName === 'embed') {
       if (interaction.user.id !== CONFIG.OWNER_ID) {
         return interaction.reply({
@@ -65,7 +65,7 @@ client.on('interactionCreate', async interaction => {
       const title = interaction.options.getString('title');
       const description = interaction.options.getString('description');
       const color = interaction.options.getString('color') || '#2f3136';
-      const imageUrl = interaction.options.getString('image'); // ✅ BAGO: Link ng litrato/gif
+      const imageUrl = interaction.options.getString('image');
 
       const embed = new EmbedBuilder()
         .setTitle(title)
@@ -74,16 +74,13 @@ client.on('interactionCreate', async interaction => {
         .setThumbnail(CONFIG.BOT_THUMBNAIL)
         .setTimestamp();
 
-      // ✅ KUNG MAY NILAGAY NA LARAWAN/GIF, ILALAGAY ITO SA BANNER
-      if (imageUrl) {
-        embed.setImage(imageUrl);
-      }
+      if (imageUrl) embed.setImage(imageUrl);
 
       await interaction.channel.send({ embeds: [embed] });
       await interaction.reply({ content: '✅ Embed naipadala na!', ephemeral: true });
     }
 
-    // /setupticket command
+    // /setupticket command - ✅ INAYOS NA ANG BUTTONS!
     if (interaction.commandName === 'setupticket') {
       if (interaction.user.id !== CONFIG.OWNER_ID) {
         return interaction.reply({
@@ -110,15 +107,18 @@ client.on('interactionCreate', async interaction => {
         .setColor('#1a1a2e')
         .setTimestamp();
 
+      // ✅ INAYOS NA: GANITO NA ANG ITSURA - MALAKI, PANTAY, GANYAN ANG SULAT
       const buttons = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setCustomId('open_buy')
-          .setLabel('🛒 BUY / SHOP')
-          .setStyle(ButtonStyle.Success),
+          .setLabel('SHOP')
+          .setStyle(ButtonStyle.Secondary)
+          .setEmoji('➤'), // Pwede mong tanggalin 'to kung ayaw mo ng emoji
         new ButtonBuilder()
           .setCustomId('open_support')
-          .setLabel('🔧 SUPPORT / HELP')
-          .setStyle(ButtonStyle.Primary)
+          .setLabel('SUPPORT')
+          .setStyle(ButtonStyle.Secondary)
+          .setEmoji('') // Pwede mong tanggalin 'to kung ayaw mo ng emoji
       );
 
       await interaction.channel.send({ embeds: [ticketEmbed], components: [buttons] });
@@ -130,7 +130,6 @@ client.on('interactionCreate', async interaction => {
   if (interaction.isButton()) {
     const { customId, user, guild } = interaction;
 
-    // Check kung may existing ticket na ang user
     const existingTicket = guild.channels.cache.find(ch =>
       ch.name.toLowerCase() === `ticket-${user.username.toLowerCase()}`
     );
@@ -142,7 +141,6 @@ client.on('interactionCreate', async interaction => {
       });
     }
 
-    // Gumawa ng ticket
     if (customId === 'open_buy' || customId === 'open_support') {
       const ticketType = customId === 'open_buy' ? '🛒 ORDER / PURCHASE' : '🔧 SUPPORT / HELP';
 
@@ -209,7 +207,6 @@ Salamat sa pagpili sa AZURA SHOP!`)
       }
     }
 
-    // Isara ang ticket
     if (customId === 'close_ticket') {
       await interaction.reply({
         content: '⏳ Isasara at buburahin ang ticket sa loob ng 5 segundo...'
@@ -269,7 +266,6 @@ const commands = [
         .setDescription('Kulay ng border (hal: #ff0000)')
         .setRequired(false)
     )
-    // ✅ BAGONG OPTION: PARA SA LARAWAN O GIF
     .addStringOption(option =>
       option.setName('image')
         .setDescription('Link ng larawan o GIF (ilalagay bilang malaking banner)')
