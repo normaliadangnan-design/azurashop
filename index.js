@@ -113,12 +113,12 @@ client.on('interactionCreate', async interaction => {
           .setCustomId('open_buy')
           .setLabel('SHOP')
           .setStyle(ButtonStyle.Secondary)
-          .setEmoji('➤'), // Pwede mong tanggalin 'to kung ayaw mo ng emoji
+          .setEmoji('➤'),
         new ButtonBuilder()
           .setCustomId('open_support')
           .setLabel('SUPPORT')
           .setStyle(ButtonStyle.Secondary)
-          .setEmoji('') // Pwede mong tanggalin 'to kung ayaw mo ng emoji
+          .setEmoji('➤')
       );
 
       await interaction.channel.send({ embeds: [ticketEmbed], components: [buttons] });
@@ -219,7 +219,7 @@ Salamat sa pagpili sa AZURA SHOP!`)
 });
 
 // ==============================================
-// 💳 PAYMENT COMMAND - .payment
+// 💳 PAYMENT COMMAND - ✅ INAYOS NA MAY BANNER/GIF!
 // ==============================================
 client.on('messageCreate', async message => {
   if (message.author.bot) return;
@@ -236,6 +236,7 @@ client.on('messageCreate', async message => {
       .setColor('#00a8ff')
       .setTimestamp();
 
+    // ✅ DITO INILAGAY: Ang QR Code o GIF mo ay magiging malaking banner sa ibaba
     if (CONFIG.GCASH.QR_CODE && CONFIG.GCASH.QR_CODE !== '') {
       paymentEmbed.setImage(CONFIG.GCASH.QR_CODE);
     }
