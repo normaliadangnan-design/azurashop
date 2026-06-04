@@ -124,7 +124,7 @@ client.on('interactionCreate', async interaction => {
     }
 
     if (customId === 'open_buy' || customId === 'open_support') {
-      const ticketType = customId === 'open_buy' ? '🛒 ORDER / PURCHASE' : '🔧 SUPPORT / HELP';
+      const ticketType = customId === 'open_buy' ? '➤ ORDER / PURCHASE' : '➤ SUPPORT / HELP';
       try {
         const ticketChannel = await guild.channels.create({
           name: `ticket-${user.username}`,
