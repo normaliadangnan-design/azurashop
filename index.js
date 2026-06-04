@@ -80,7 +80,7 @@ client.on('interactionCreate', async interaction => {
       await interaction.reply({ content: '✅ Embed naipadala na!', ephemeral: true });
     }
 
-    // /setupticket command - ✅ INAYOS NA ANG BUTTONS!
+    // /setupticket command - ✅ TAMA NA ANG ITSURA DITO!
     if (interaction.commandName === 'setupticket') {
       if (interaction.user.id !== CONFIG.OWNER_ID) {
         return interaction.reply({
@@ -107,18 +107,16 @@ client.on('interactionCreate', async interaction => {
         .setColor('#1a1a2e')
         .setTimestamp();
 
-      // ✅ INAYOS NA: GANITO NA ANG ITSURA - MALAKI, PANTAY, GANYAN ANG SULAT
+      // ✅ TAMA NA ITO: SHOP at SUPPORT, GRAY, WALANG IBA PANG SULAT
       const buttons = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setCustomId('open_buy')
           .setLabel('SHOP')
-          .setStyle(ButtonStyle.Secondary)
-          .setEmoji('➤'),
+          .setStyle(ButtonStyle.Secondary), // ✅ GRAY / KULAY ABO
         new ButtonBuilder()
           .setCustomId('open_support')
           .setLabel('SUPPORT')
-          .setStyle(ButtonStyle.Secondary)
-          .setEmoji('➤')
+          .setStyle(ButtonStyle.Secondary) // ✅ GRAY / KULAY ABO
       );
 
       await interaction.channel.send({ embeds: [ticketEmbed], components: [buttons] });
@@ -142,7 +140,7 @@ client.on('interactionCreate', async interaction => {
     }
 
     if (customId === 'open_buy' || customId === 'open_support') {
-      const ticketType = customId === 'open_buy' ? '🛒 ORDER / PURCHASE' : '🔧 SUPPORT / HELP';
+      const ticketType = customId === 'open_buy' ? '➤ ORDER / PURCHASE' : '➤ SUPPORT / HELP';
 
       try {
         const ticketChannel = await guild.channels.create({
@@ -219,7 +217,7 @@ Salamat sa pagpili sa AZURA SHOP!`)
 });
 
 // ==============================================
-// 💳 PAYMENT COMMAND - ✅ INAYOS NA MAY BANNER/GIF!
+// 💳 PAYMENT COMMAND - ✅ MAY QR CODE NA!
 // ==============================================
 client.on('messageCreate', async message => {
   if (message.author.bot) return;
@@ -236,8 +234,8 @@ client.on('messageCreate', async message => {
       .setColor('#00a8ff')
       .setTimestamp();
 
-    // ✅ DITO INILAGAY: Ang QR Code o GIF mo ay magiging malaking banner sa ibaba
-    if (CONFIG.GCASH.QR_CODE && CONFIG.GCASH.QR_CODE !== '') {
+    // ✅ DITO LALABAS ANG QR CODE MO
+    if (CONFIG.GCASH.QR_CODE) {
       paymentEmbed.setImage(CONFIG.GCASH.QR_CODE);
     }
 
@@ -246,31 +244,23 @@ client.on('messageCreate', async message => {
 });
 
 // ==============================================
-// 📝 REGISTER ALL SLASH COMMANDS
+// 📝 FORCE UPDATE NG COMMANDS - PWEDE NA ITO!
 // ==============================================
 const commands = [
   new SlashCommandBuilder()
     .setName('embed')
     .setDescription('Gumawa ng custom embed post (Owner only)')
     .addStringOption(option =>
-      option.setName('title')
-        .setDescription('Pamagat ng embed')
-        .setRequired(true)
+      option.setName('title').setDescription('Pamagat ng embed').setRequired(true)
     )
     .addStringOption(option =>
-      option.setName('description')
-        .setDescription('Nilalaman o mensahe')
-        .setRequired(true)
+      option.setName('description').setDescription('Nilalaman o mensahe').setRequired(true)
     )
     .addStringOption(option =>
-      option.setName('color')
-        .setDescription('Kulay ng border (hal: #ff0000)')
-        .setRequired(false)
+      option.setName('color').setDescription('Kulay ng border (hal: #ff0000)').setRequired(false)
     )
     .addStringOption(option =>
-      option.setName('image')
-        .setDescription('Link ng larawan o GIF (ilalagay bilang malaking banner)')
-        .setRequired(false)
+      option.setName('image').setDescription('Link ng larawan o GIF').setRequired(false)
     ),
   new SlashCommandBuilder()
     .setName('setupticket')
@@ -281,14 +271,16 @@ const rest = new REST({ version: '10' }).setToken(CONFIG.BOT_TOKEN);
 
 (async () => {
   try {
-    console.log('🔄 Nagrerehistro ng mga commands...');
-    await rest.put(
-      Routes.applicationCommands(CONFIG.CLIENT_ID),
-      { body: commands }
-    );
-    console.log('✅ Lahat ng commands ay matagumpay na nairehistro!');
+    console.log('🔄 Pilit na ina-update ang mga commands...');
+    // ✅ TINANGGAL NATIN ANG LUMANG COMMANDS BAGO MAGLAGAY NG BAGO
+    await rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), { body: [] });
+    console.log('🗑️ Lumang commands tinanggal na!');
+    
+    // ✅ ILAGAY ANG BAGO AT TAMANG COMMANDS
+    await rest.put(Routes.applicationCommands(CONFIG.CLIENT_ID), { body: commands });
+    console.log('✅ Bagong commands nairehistro na!');
   } catch (error) {
-    console.error('❌ Error sa pagrehistro ng commands:', error);
+    console.error('❌ Error sa pagrehistro:', error);
   }
 })();
 
