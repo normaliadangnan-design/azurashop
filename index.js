@@ -53,7 +53,7 @@ client.on('interactionCreate', async interaction => {
   // --- SLASH COMMANDS ---
   if (interaction.isChatInputCommand()) {
 
-    // /embed command
+    // /embed command - ✅ INAYOS NA PWEDE NA MAY LARAWAN/GIF
     if (interaction.commandName === 'embed') {
       if (interaction.user.id !== CONFIG.OWNER_ID) {
         return interaction.reply({
@@ -65,6 +65,7 @@ client.on('interactionCreate', async interaction => {
       const title = interaction.options.getString('title');
       const description = interaction.options.getString('description');
       const color = interaction.options.getString('color') || '#2f3136';
+      const imageUrl = interaction.options.getString('image'); // ✅ BAGO: Link ng litrato/gif
 
       const embed = new EmbedBuilder()
         .setTitle(title)
@@ -72,6 +73,11 @@ client.on('interactionCreate', async interaction => {
         .setColor(color)
         .setThumbnail(CONFIG.BOT_THUMBNAIL)
         .setTimestamp();
+
+      // ✅ KUNG MAY NILAGAY NA LARAWAN/GIF, ILALAGAY ITO SA BANNER
+      if (imageUrl) {
+        embed.setImage(imageUrl);
+      }
 
       await interaction.channel.send({ embeds: [embed] });
       await interaction.reply({ content: '✅ Embed naipadala na!', ephemeral: true });
@@ -261,6 +267,12 @@ const commands = [
     .addStringOption(option =>
       option.setName('color')
         .setDescription('Kulay ng border (hal: #ff0000)')
+        .setRequired(false)
+    )
+    // ✅ BAGONG OPTION: PARA SA LARAWAN O GIF
+    .addStringOption(option =>
+      option.setName('image')
+        .setDescription('Link ng larawan o GIF (ilalagay bilang malaking banner)')
         .setRequired(false)
     ),
   new SlashCommandBuilder()
