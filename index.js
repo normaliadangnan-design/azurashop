@@ -22,10 +22,10 @@ const client = new Client({
 });
 
 // ==============================================
-// ✅ DETALYE MO
+// ✅ DETALYE MO - GINAGAMIT NA ANG VARIABLE
 // ==============================================
 const CONFIG = {
-  BOT_TOKEN: 'MTUxMjAzNjcwMzcxNDQxMDYyNg.GjeYDP.7zEjfg20Eduy2pnsOoLgoGxttXDY-AZ4OJgQB0',
+  BOT_TOKEN: process.env.BOT_TOKEN, // <-- ITO ANG TAMA, KINUKUHA SA RAILWAY VARIABLES
   CLIENT_ID: '1512036703714410626',
   OWNER_ID: '1250654354344775703',
   TICKET_CATEGORY_ID: '1511950129110712450',
@@ -98,16 +98,16 @@ client.on('interactionCreate', async interaction => {
     if(exist && customId !== 'close') return interaction.reply({content:`❌ May ticket ka na: ${exist}`,ephemeral:true});
 
     if(customId === 'buy' || customId === 'support'){
-      const type = customId === 'buy' ? '➤ ORDER' : '➤ SUPPORT';
+      const type = customId === 'buy' ? '➤ ORDER / PURCHASE' : '➤ SUPPORT / HELP';
       try {
         const ch = await guild.channels.create({
           name: `ticket-${user.username}`,
           type: ChannelType.GuildText,
           parent: CONFIG.TICKET_CATEGORY_ID,
           permissionOverwrites: [
-            {id:guild.id, deny:['ViewChannel']},
-            {id:user.id, allow:['ViewChannel','SendMessages','AttachFiles','ReadMessageHistory']},
-            {id:CONFIG.OWNER_ID, allow:['ViewChannel','SendMessages','ManageChannels']}
+            {id:guild.id, deny:[PermissionFlagsBits.ViewChannel]},
+            {id:user.id, allow:[PermissionFlagsBits.ViewChannel,PermissionFlagsBits.SendMessages,PermissionFlagsBits.AttachFiles,PermissionFlagsBits.ReadMessageHistory]},
+            {id:CONFIG.OWNER_ID, allow:[PermissionFlagsBits.ViewChannel,PermissionFlagsBits.SendMessages,PermissionFlagsBits.ManageChannels]}
           ]
         });
 
@@ -124,7 +124,7 @@ Salamat sa pagpili sa AZURA SHOP!`)
           .setThumbnail(CONFIG.BOT_THUMBNAIL);
 
         const closeBtn = new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId('close').setLabel('🔒 CLOSE').setStyle(ButtonStyle.Danger)
+          new ButtonBuilder().setCustomId('close').setLabel('🔒 CLOSE TICKET').setStyle(ButtonStyle.Danger)
         );
 
         await ch.send({content:`👋 Hello ${user}!`, embeds:[content], components:[closeBtn]});
@@ -141,7 +141,7 @@ Salamat sa pagpili sa AZURA SHOP!`)
 });
 
 // ==============================================
-// 💳 PAYMENT COMMAND - MAY QR CODE
+// 💳 PAYMENT COMMAND - MAY QR CODE NA TALAGA
 // ==============================================
 client.on('messageCreate', async msg => {
   if(msg.author.bot) return;
@@ -161,7 +161,7 @@ client.on('messageCreate', async msg => {
 });
 
 // ==============================================
-// 📝 REGISTER COMMANDS
+// 📝 REGISTER COMMANDS - SIGURADONG GAGANA
 // ==============================================
 const commands = [
   new SlashCommandBuilder().setName('embed').setDescription('Gumawa ng embed').addStringOption(o=>o.setName('title').setDescription('Pamagat').setRequired(true)).addStringOption(o=>o.setName('description').setDescription('Laman').setRequired(true)),
