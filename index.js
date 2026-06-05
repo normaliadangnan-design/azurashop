@@ -22,10 +22,10 @@ const client = new Client({
 });
 
 // ==============================================
-// ✅ DETALYE MO - GINAGAMIT NA ANG VARIABLE
+// ✅ DETALYE MO
 // ==============================================
 const CONFIG = {
-  BOT_TOKEN: process.env.BOT_TOKEN, // <-- ITO ANG TAMA, KINUKUHA SA RAILWAY VARIABLES
+  BOT_TOKEN: process.env.BOT_TOKEN, // KINUKUHA SA RAILWAY VARIABLES
   CLIENT_ID: '1512036703714410626',
   OWNER_ID: '1250654354344775703',
   TICKET_CATEGORY_ID: '1511950129110712450',
