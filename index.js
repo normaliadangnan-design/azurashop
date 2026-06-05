@@ -164,7 +164,7 @@ client.on('messageCreate', async msg => {
 // 📝 REGISTER COMMANDS
 // ==============================================
 const commands = [
-  new SlashCommandBuilder().setName('embed').setDescription('Gumawa ng embed').addStringOption(o=>o.setName('title').setDescription('Pamagat').setRequired(true)).addStringOption(o=>o.setName('desc').setDescription('Laman').setRequired(true)),
+  new SlashCommandBuilder().setName('embed').setDescription('Gumawa ng embed').addStringOption(o=>o.setName('title').setDescription('Pamagat').setRequired(true)).addStringOption(o=>o.setName('description').setDescription('Laman').setRequired(true)),
   new SlashCommandBuilder().setName('setupticket').setDescription('I-setup ang ticket panel')
 ];
 
