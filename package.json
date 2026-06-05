@@ -1,7 +1,7 @@
 {
-  "name": "azura-shop-bot",
+  "name": "azurashop-bot",
   "version": "1.0.0",
-  "description": "AZURA SHOP BOT",
+  "description": "Azura Shop Discord Bot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
